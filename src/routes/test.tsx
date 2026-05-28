@@ -91,7 +91,7 @@ function TestPage() {
               />
             </div>
 
-            <div className="mt-10 rounded-3xl border border-border bg-card p-7 shadow-[var(--shadow-soft)] sm:p-10">
+            <div className="mt-10 rounded-3xl border border-border bg-card p-7 shadow-[var(--shadow-soft)] sm:p-10 font-mono opacity-40">
               <div className="text-xs font-semibold uppercase tracking-wider text-primary">Утверждение</div>
               <h1 className="mt-2 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">
                 {q.text}
