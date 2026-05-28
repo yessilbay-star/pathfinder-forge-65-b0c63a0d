@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QUESTIONS, SCALES, PROFESSIONS, type RiasecCode } from "@/lib/test-data";
 import { ArrowLeft, ArrowRight, RotateCcw, Sparkles, Heart } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/test")({
   head: () => ({
@@ -15,14 +16,8 @@ export const Route = createFileRoute("/test")({
   component: TestPage,
 });
 
-const ANSWER_OPTIONS = [
-  { v: 0, l: "Совсем нет" },
-  { v: 1, l: "Скорее нет" },
-  { v: 2, l: "Скорее да" },
-  { v: 3, l: "Точно да" },
-];
-
 function TestPage() {
+  const { t } = useI18n();
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
@@ -47,8 +42,7 @@ function TestPage() {
   }, [answers]);
 
   const ordered = useMemo(() => {
-    return (Object.entries(scores) as [RiasecCode, number][])
-      .sort((a, b) => b[1] - a[1]);
+    return (Object.entries(scores) as [RiasecCode, number][]).sort((a, b) => b[1] - a[1]);
   }, [scores]);
 
   const topCodes = ordered.slice(0, 3).map(([c]) => c);
@@ -56,8 +50,8 @@ function TestPage() {
   const matches = useMemo(() => {
     return PROFESSIONS
       .map((p) => {
-        const score = p.tags.reduce((acc, t) => acc + (scores[t] ?? 0), 0);
-        const bonus = p.tags.every((t) => topCodes.includes(t)) ? 5 : 0;
+        const score = p.tags.reduce((acc, tt) => acc + (scores[tt] ?? 0), 0);
+        const bonus = p.tags.every((tt) => topCodes.includes(tt)) ? 5 : 0;
         return { ...p, score: score + bonus };
       })
       .sort((a, b) => b.score - a.score)
@@ -81,37 +75,34 @@ function TestPage() {
         {!done ? (
           <>
             <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span>Тест Холланда (RIASEC)</span>
-              <span>Вопрос {step + 1} из {total}</span>
+              <span>{t.test.method}</span>
+              <span>{t.test.questionOf(step + 1, total)}</span>
             </div>
             <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
+              <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }} />
             </div>
 
             <div className="mt-10 rounded-3xl border border-border bg-card p-7 shadow-[var(--shadow-soft)] sm:p-10 font-mono opacity-40">
-              <div className="text-xs font-semibold uppercase tracking-wider text-primary">Утверждение</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-primary">{t.test.statement}</div>
               <h1 className="mt-2 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">
-                {q.text}
+                {t.test.questions[q.id] ?? q.text}
               </h1>
-              <p className="mt-3 text-sm text-muted-foreground">Насколько это про тебя?</p>
+              <p className="mt-3 text-sm text-muted-foreground">{t.test.howMuchYou}</p>
 
               <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                {ANSWER_OPTIONS.map((opt) => {
-                  const selected = answers[q.id] === opt.v;
+                {t.test.answers.map((label, v) => {
+                  const selected = answers[q.id] === v;
                   return (
                     <button
-                      key={opt.v}
-                      onClick={() => pick(opt.v)}
+                      key={v}
+                      onClick={() => pick(v)}
                       className={`group flex items-center justify-between rounded-2xl border px-5 py-4 text-left text-base font-medium transition-all ${
                         selected
                           ? "border-primary bg-primary-soft text-ink shadow-[var(--shadow-soft)]"
                           : "border-border bg-card text-ink hover:border-primary/40 hover:bg-secondary"
                       }`}
                     >
-                      <span>{opt.l}</span>
+                      <span>{label}</span>
                       <span className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${selected ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
                         {selected && <span className="h-2 w-2 rounded-full bg-current" />}
                       </span>
@@ -126,9 +117,9 @@ function TestPage() {
                   disabled={step === 0}
                   className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-40"
                 >
-                  <ArrowLeft className="h-4 w-4" /> Назад
+                  <ArrowLeft className="h-4 w-4" /> {t.test.back}
                 </button>
-                <div className="text-xs text-muted-foreground">Ответ сохраняется автоматически</div>
+                <div className="text-xs text-muted-foreground">{t.test.autosave}</div>
               </div>
             </div>
           </>
@@ -151,43 +142,41 @@ function Results({
   toggleFav: (n: string) => void;
   restart: () => void;
 }) {
+  const { t } = useI18n();
   const max = Math.max(...Object.values(scores), 1);
   const topCode = ordered[0][0];
-  const topLabel = SCALES[topCode].label;
+  const topLabel = t.test.scales[topCode].label;
 
   return (
     <div className="space-y-8">
-      <div
-        className="overflow-hidden rounded-3xl border border-primary/20 p-8 sm:p-10"
-        style={{ background: "var(--gradient-hero)" }}
-      >
+      <div className="overflow-hidden rounded-3xl border border-primary/20 p-8 sm:p-10" style={{ background: "var(--gradient-hero)" }}>
         <div className="inline-flex items-center gap-2 rounded-full bg-card px-3 py-1 text-xs font-semibold text-primary shadow-sm">
-          <Sparkles className="h-3.5 w-3.5" /> Твой результат готов
+          <Sparkles className="h-3.5 w-3.5" /> {t.test.resultReady}
         </div>
         <h1 className="mt-4 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-          Ты — <span className="text-primary">{topLabel.toLowerCase()}</span> тип
+          {t.test.youAre(topLabel.toLowerCase())}
         </h1>
         <p className="mt-3 max-w-xl text-muted-foreground">
-          {SCALES[topCode].desc}. На основе твоих ответов мы подобрали профессии, в которых ты с большой вероятностью реализуешься.
+          {t.test.scales[topCode].desc}{t.test.resultIntroSuffix}
         </p>
       </div>
 
       <section className="rounded-3xl border border-border bg-card p-7 shadow-[var(--shadow-soft)] sm:p-9">
-        <h2 className="font-display text-xl font-semibold text-ink">Профиль склонностей</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Шесть шкал методики Холланда (RIASEC)</p>
+        <h2 className="font-display text-xl font-semibold text-ink">{t.test.profile}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{t.test.profileSub}</p>
         <div className="mt-6 grid gap-5 md:grid-cols-[260px_1fr] md:items-center">
           <RadarChart scores={scores} />
           <ul className="space-y-3">
             {ordered.map(([code, val]) => (
               <li key={code}>
                 <div className="flex items-baseline justify-between text-sm">
-                  <span className="font-semibold text-ink">{SCALES[code].label}</span>
-                  <span className="text-muted-foreground">{val}/{QUESTIONS.filter(q=>q.code===code).length * 3}</span>
+                  <span className="font-semibold text-ink">{t.test.scales[code].label}</span>
+                  <span className="text-muted-foreground">{val}/{QUESTIONS.filter((qq) => qq.code === code).length * 3}</span>
                 </div>
                 <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-muted">
                   <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${(val / max) * 100}%` }} />
                 </div>
-                <div className="mt-1 text-xs text-muted-foreground">{SCALES[code].desc}</div>
+                <div className="mt-1 text-xs text-muted-foreground">{t.test.scales[code].desc}</div>
               </li>
             ))}
           </ul>
@@ -197,33 +186,37 @@ function Results({
       <section>
         <div className="flex items-end justify-between">
           <div>
-            <h2 className="font-display text-xl font-semibold text-ink">Подходящие профессии</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Сохрани понравившиеся — мы добавим их в избранное.</p>
+            <h2 className="font-display text-xl font-semibold text-ink">{t.test.matches}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t.test.matchesSub}</p>
           </div>
         </div>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           {matches.map((p) => {
             const fav = favs.has(p.name);
+            const loc = t.test.professions[p.name];
+            const displayName = loc?.name ?? p.name;
+            const displayDesc = loc?.desc ?? p.desc;
+            const displaySalary = loc?.salary ?? p.salary;
             return (
               <div key={p.name} className="rounded-2xl border border-border bg-card p-5 transition-all hover:border-primary/40">
                 <div className="flex items-start justify-between gap-3">
                   <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-2xl">{p.emoji}</span>
                   <button
                     onClick={() => toggleFav(p.name)}
-                    aria-label="В избранное"
+                    aria-label={t.test.favLabel}
                     className={`rounded-full p-2 transition-colors ${fav ? "bg-primary-soft text-primary" : "text-muted-foreground hover:bg-secondary"}`}
                   >
                     <Heart className={`h-4 w-4 ${fav ? "fill-current" : ""}`} />
                   </button>
                 </div>
-                <h3 className="mt-3 font-display text-lg font-semibold text-ink">{p.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
+                <h3 className="mt-3 font-display text-lg font-semibold text-ink">{displayName}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{displayDesc}</p>
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-primary">{p.salary}</span>
+                  <span className="text-sm font-semibold text-primary">{displaySalary}</span>
                   <div className="flex gap-1">
-                    {p.tags.map((t) => (
-                      <span key={t} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                        {SCALES[t].label}
+                    {p.tags.map((tt) => (
+                      <span key={tt} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                        {t.test.scales[tt].label}
                       </span>
                     ))}
                   </div>
@@ -236,21 +229,15 @@ function Results({
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-border bg-card p-6">
         <div>
-          <div className="font-display text-lg font-semibold text-ink">Хочешь расширенный отчёт и PDF?</div>
-          <div className="text-sm text-muted-foreground">Сохрани результат в личном кабинете и обсуди его с консультантом.</div>
+          <div className="font-display text-lg font-semibold text-ink">{t.test.extendedTitle}</div>
+          <div className="text-sm text-muted-foreground">{t.test.extendedSub}</div>
         </div>
         <div className="flex gap-2">
-          <button
-            onClick={restart}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-secondary"
-          >
-            <RotateCcw className="h-4 w-4" /> Пройти заново
+          <button onClick={restart} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-secondary">
+            <RotateCcw className="h-4 w-4" /> {t.test.restart}
           </button>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-110"
-          >
-            На главную <ArrowRight className="h-4 w-4" />
+          <Link to="/" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-110">
+            {t.test.toHome} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>
@@ -304,8 +291,7 @@ function RadarChart({ scores }: { scores: Record<RiasecCode, number> }) {
       {codes.map((c, i) => {
         const [x, y] = labelPt(i);
         return (
-          <text key={c} x={x} y={y} textAnchor="middle" dominantBaseline="middle"
-            fontSize={11} fontWeight={600} fill="oklch(0.18 0.03 250)">
+          <text key={c} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize={11} fontWeight={600} fill="oklch(0.18 0.03 250)">
             {c}
           </text>
         );
@@ -313,3 +299,6 @@ function RadarChart({ scores }: { scores: Record<RiasecCode, number> }) {
     </svg>
   );
 }
+
+// Suppress unused import warnings — SCALES/PROFESSIONS structure is still consumed elsewhere
+void SCALES;

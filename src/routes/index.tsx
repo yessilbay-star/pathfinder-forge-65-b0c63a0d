@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ArrowRight, Brain, Compass, GraduationCap, LineChart, Sparkles, Users, CheckCircle2, Clock, Star } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,54 +34,37 @@ function Index() {
 }
 
 function Hero() {
+  const { t } = useI18n();
   return (
     <section className="relative overflow-hidden">
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10"
-        style={{ background: "var(--gradient-hero)" }}
-      />
+      <div aria-hidden className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-2">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft/60 px-3 py-1 text-xs font-semibold text-primary">
-            <Sparkles className="h-3.5 w-3.5" /> AI-рекомендации внутри
+            <Sparkles className="h-3.5 w-3.5" /> {t.hero.badge}
           </span>
           <h1 className="mt-5 font-display text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl">
-            Найди профессию,<br />
-            в которой ты <span className="text-primary">расцветёшь</span>
+            {t.hero.titleA}<br />
+            {t.hero.titleB} <span className="text-primary">{t.hero.titleAccent}</span>
           </h1>
-          <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-            Научные тесты, атлас из 500+ профессий и консультации с экспертами — всё, чтобы выбрать карьерный путь осознанно.
-          </p>
+          <p className="mt-5 max-w-lg text-lg text-muted-foreground">{t.hero.subtitle}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/test"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-all hover:brightness-110"
-            >
-              Пройти тест бесплатно <ArrowRight className="h-4 w-4" />
+            <Link to="/test" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-all hover:brightness-110">
+              {t.hero.ctaPrimary} <ArrowRight className="h-4 w-4" />
             </Link>
-            <a
-              href="#how"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-base font-semibold text-ink transition-colors hover:bg-secondary"
-            >
-              Как это работает
+            <a href="#how" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-base font-semibold text-ink transition-colors hover:bg-secondary">
+              {t.hero.ctaSecondary}
             </a>
           </div>
           <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4 text-primary" /> 5–7 минут</span>
-            <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" /> Без регистрации</span>
-            <span className="inline-flex items-center gap-1.5"><Star className="h-4 w-4 text-primary" /> 4.9 / 5</span>
+            <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4 text-primary" /> {t.hero.meta.time}</span>
+            <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" /> {t.hero.meta.noReg}</span>
+            <span className="inline-flex items-center gap-1.5"><Star className="h-4 w-4 text-primary" /> {t.hero.meta.rating}</span>
           </div>
         </div>
         <div className="relative">
           <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-primary/10 blur-2xl" />
-          <img
-            src={heroImg}
-            alt="Иллюстрация профориентационной платформы"
-            width={1280}
-            height={960}
-            className="w-full rounded-[1.75rem] border border-border bg-card shadow-[var(--shadow-soft)]"
-          />
+          <img src={heroImg} alt={t.hero.alt} width={1280} height={960} className="w-full rounded-[1.75rem] border border-border bg-card shadow-[var(--shadow-soft)]" />
         </div>
       </div>
     </section>
@@ -88,11 +72,12 @@ function Hero() {
 }
 
 function Stats() {
+  const { t } = useI18n();
   const items = [
-    { v: "120K+", l: "прошли тест" },
-    { v: "500+", l: "профессий в атласе" },
-    { v: "180", l: "консультантов" },
-    { v: "92%", l: "довольны результатом" },
+    { v: "120K+", l: t.stats.passed },
+    { v: "500+", l: t.stats.professions },
+    { v: "180", l: t.stats.consultants },
+    { v: "92%", l: t.stats.satisfied },
   ];
   return (
     <section className="border-y border-border/60 bg-card">
@@ -109,61 +94,64 @@ function Stats() {
 }
 
 function PopularTests() {
-  const tests = [
-    { icon: Compass, title: "Тест Холланда (RIASEC)", desc: "Определяет твой профессиональный тип личности.", time: "5 мин", tag: "Бесплатно", featured: true },
-    { icon: Brain, title: "Методика Климова", desc: "Выявляет склонность к 5 сферам деятельности.", time: "8 мин", tag: "Бесплатно" },
-    { icon: LineChart, title: "Карьерные ценности", desc: "Что для тебя по-настоящему важно в работе.", time: "6 мин", tag: "Pro" },
-  ];
+  const { t } = useI18n();
+  const icons = [Compass, Brain, LineChart];
   return (
     <section id="tests" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <SectionHead eyebrow="Тесты" title="Популярные методики" subtitle="Научно обоснованные тесты, адаптированные под подростков и взрослых." />
+      <SectionHead eyebrow={t.popular.eyebrow} title={t.popular.title} subtitle={t.popular.subtitle} />
       <div className="mt-10 grid gap-5 md:grid-cols-3">
-        {tests.map((t) => (
-          <div key={t.title} className="group relative rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-primary/40">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
-              <t.icon className="h-5 w-5" />
+        {t.popular.items.map((item, idx) => {
+          const Icon = icons[idx];
+          const featured = idx === 0;
+          const tagLabel = item.tag === "pro" ? t.popular.pro : t.popular.free;
+          return (
+            <div key={item.title} className="group relative rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-primary/40">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                <Icon className="h-5 w-5" />
+              </div>
+              <h3 className="mt-4 font-display text-lg font-semibold text-ink">{item.title}</h3>
+              <p className="mt-1.5 text-sm text-muted-foreground">{item.desc}</p>
+              <div className="mt-5 flex items-center justify-between text-xs">
+                <span className="inline-flex items-center gap-1 text-muted-foreground"><Clock className="h-3.5 w-3.5" /> {item.time}</span>
+                <span className={`rounded-full px-2.5 py-0.5 font-semibold ${item.tag === "pro" ? "bg-accent text-accent-foreground" : "bg-primary-soft text-primary"}`}>{tagLabel}</span>
+              </div>
+              {featured && (
+                <Link to="/test" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
+                  {t.popular.passNow} <ArrowRight className="h-4 w-4" />
+                </Link>
+              )}
             </div>
-            <h3 className="mt-4 font-display text-lg font-semibold text-ink">{t.title}</h3>
-            <p className="mt-1.5 text-sm text-muted-foreground">{t.desc}</p>
-            <div className="mt-5 flex items-center justify-between text-xs">
-              <span className="inline-flex items-center gap-1 text-muted-foreground"><Clock className="h-3.5 w-3.5" /> {t.time}</span>
-              <span className={`rounded-full px-2.5 py-0.5 font-semibold ${t.tag === "Pro" ? "bg-accent text-accent-foreground" : "bg-primary-soft text-primary"}`}>{t.tag}</span>
-            </div>
-            {t.featured && (
-              <Link to="/test" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
-                Пройти сейчас <ArrowRight className="h-4 w-4" />
-              </Link>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
 }
 
 function HowItWorks() {
-  const steps = [
-    { n: "01", icon: Brain, title: "Пройди тест", desc: "Ответь на короткие вопросы — без правильных и неправильных ответов." },
-    { n: "02", icon: Sparkles, title: "Получи AI-анализ", desc: "Алгоритм построит твой профиль склонностей и подберёт профессии." },
-    { n: "03", icon: GraduationCap, title: "Выбери путь", desc: "Изучи карточки профессий, курсов и при желании запишись к консультанту." },
-  ];
+  const { t } = useI18n();
+  const icons = [Brain, Sparkles, GraduationCap];
   return (
     <section id="how" className="bg-secondary/40 py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <SectionHead eyebrow="Как это работает" title="Три шага к ясности" />
+        <SectionHead eyebrow={t.how.eyebrow} title={t.how.title} />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {steps.map((s) => (
-            <div key={s.n} className="rounded-2xl border border-border bg-card p-7">
-              <div className="flex items-center justify-between">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                  <s.icon className="h-5 w-5" />
-                </span>
-                <span className="font-display text-2xl font-bold text-primary/30">{s.n}</span>
+          {t.how.steps.map((s, idx) => {
+            const Icon = icons[idx];
+            const n = String(idx + 1).padStart(2, "0");
+            return (
+              <div key={s.title} className="rounded-2xl border border-border bg-card p-7">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span className="font-display text-2xl font-bold text-primary/30">{n}</span>
+                </div>
+                <h3 className="mt-5 font-display text-lg font-semibold text-ink">{s.title}</h3>
+                <p className="mt-1.5 text-sm text-muted-foreground">{s.desc}</p>
               </div>
-              <h3 className="mt-5 font-display text-lg font-semibold text-ink">{s.title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">{s.desc}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -171,19 +159,12 @@ function HowItWorks() {
 }
 
 function AtlasTeaser() {
-  const items = [
-    { e: "💻", n: "Frontend-разработчик", s: "от 120 тыс ₽" },
-    { e: "🎨", n: "UX/UI-дизайнер", s: "от 100 тыс ₽" },
-    { e: "📊", n: "Data Scientist", s: "от 180 тыс ₽" },
-    { e: "🧠", n: "Психолог", s: "от 60 тыс ₽" },
-    { e: "🚀", n: "Продакт-менеджер", s: "от 180 тыс ₽" },
-    { e: "🎬", n: "Видеомонтажёр", s: "от 80 тыс ₽" },
-  ];
+  const { t } = useI18n();
   return (
     <section id="atlas" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <SectionHead eyebrow="Атлас профессий" title="500+ профессий — с зарплатами и навыками" subtitle="Данные обновляются по hh.ru. Сохраняй понравившиеся в избранное." />
+      <SectionHead eyebrow={t.atlas.eyebrow} title={t.atlas.title} subtitle={t.atlas.subtitle} />
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((i) => (
+        {t.atlas.items.map((i) => (
           <div key={i.n} className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 transition-all hover:border-primary/40 hover:shadow-[var(--shadow-soft)]">
             <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-2xl">{i.e}</span>
             <div>
@@ -198,17 +179,13 @@ function AtlasTeaser() {
 }
 
 function Reviews() {
-  const reviews = [
-    { name: "Анна, 17 лет", text: "Я думала, что хочу в медицину, но тест показал склонность к дизайну. Сейчас учусь на UX — и счастлива!", role: "школьница" },
-    { name: "Михаил, 34 года", text: "Сменил профессию из логистики в аналитику данных. Консультант помог составить план на 6 месяцев.", role: "свитчер" },
-    { name: "Елена, мама Артёма", text: "Сын получил понятный отчёт, мы вместе обсудили варианты вузов. Очень полезно перед поступлением.", role: "родитель" },
-  ];
+  const { t } = useI18n();
   return (
     <section id="reviews" className="bg-secondary/40 py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <SectionHead eyebrow="Отзывы" title="Что говорят пользователи" />
+        <SectionHead eyebrow={t.reviews.eyebrow} title={t.reviews.title} />
         <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {reviews.map((r) => (
+          {t.reviews.items.map((r) => (
             <div key={r.name} className="rounded-2xl border border-border bg-card p-6">
               <div className="flex gap-0.5 text-primary">
                 {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}
@@ -232,23 +209,14 @@ function Reviews() {
 }
 
 function CTA() {
+  const { t } = useI18n();
   return (
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <div
-        className="relative overflow-hidden rounded-3xl border border-primary/20 px-6 py-14 text-center sm:px-12"
-        style={{ background: "var(--gradient-primary)" }}
-      >
-        <h2 className="font-display text-3xl font-bold text-primary-foreground sm:text-4xl">
-          Готов узнать, что тебе подходит?
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-primary-foreground/90">
-          Бесплатный тест за 5 минут. Без регистрации. Результат сразу.
-        </p>
-        <Link
-          to="/test"
-          className="mt-7 inline-flex items-center gap-2 rounded-full bg-card px-7 py-3.5 text-base font-semibold text-ink shadow-lg transition-transform hover:scale-[1.02]"
-        >
-          Начать тест <ArrowRight className="h-4 w-4" />
+      <div className="relative overflow-hidden rounded-3xl border border-primary/20 px-6 py-14 text-center sm:px-12" style={{ background: "var(--gradient-primary)" }}>
+        <h2 className="font-display text-3xl font-bold text-primary-foreground sm:text-4xl">{t.cta.title}</h2>
+        <p className="mx-auto mt-3 max-w-xl text-primary-foreground/90">{t.cta.subtitle}</p>
+        <Link to="/test" className="mt-7 inline-flex items-center gap-2 rounded-full bg-card px-7 py-3.5 text-base font-semibold text-ink shadow-lg transition-transform hover:scale-[1.02]">
+          {t.cta.button} <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     </section>
