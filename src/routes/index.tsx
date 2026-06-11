@@ -37,34 +37,39 @@ function Hero() {
   const { t } = useI18n();
   return (
     <section className="relative overflow-hidden">
-      <div aria-hidden className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
+      <div aria-hidden className="absolute inset-0 -z-10 animate-circus-color-shift" style={{ background: "var(--gradient-hero)" }} />
+      <div className="absolute top-10 left-10 w-20 h-20 rounded-full bg-yellow-400 opacity-80 animate-circus-bounce" />
+      <div className="absolute top-20 right-20 w-16 h-16 rounded-full bg-primary opacity-70 animate-circus-float" style={{ animationDelay: "0.5s" }} />
+      <div className="absolute bottom-20 left-20 w-24 h-24 rounded-full bg-accent opacity-60 animate-circus-spin" style={{ animationDuration: "10s" }} />
+      <div className="absolute bottom-10 right-10 w-14 h-14 rounded-full bg-secondary opacity-90 animate-circus-float" style={{ animationDelay: "1s" }} />
+      
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-2">
-        <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft/60 px-3 py-1 text-xs font-semibold text-primary">
-            <Sparkles className="h-3.5 w-3.5" /> {t.hero.badge}
+        <div className="animate-circus-slide-in-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft/60 px-3 py-1 text-xs font-semibold text-primary animate-circus-pulse-glow">
+            <Sparkles className="h-3.5 w-3.5 animate-circus-spin" /> {t.hero.badge}
           </span>
           <h1 className="mt-5 font-display text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl">
             {t.hero.titleA}<br />
-            {t.hero.titleB} <span className="text-primary">{t.hero.titleAccent}</span>
+            {t.hero.titleB} <span className="text-primary animate-circus-bounce inline-block">{t.hero.titleAccent}</span>
           </h1>
           <p className="mt-5 max-w-lg text-lg text-muted-foreground">{t.hero.subtitle}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/test" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-all hover:brightness-110">
-              {t.hero.ctaPrimary} <ArrowRight className="h-4 w-4" />
+            <Link to="/test" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-all hover:brightness-110 border-2 border-yellow-400 animate-circus-pulse-glow hover:scale-105 transition-transform">
+              {t.hero.ctaPrimary} <ArrowRight className="h-4 w-4 animate-circus-bounce" />
             </Link>
-            <a href="#how" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-base font-semibold text-ink transition-colors hover:bg-secondary">
+            <a href="#how" className="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-card px-6 py-3 text-base font-semibold text-ink transition-colors hover:bg-yellow-400 hover:text-black hover:scale-105 transition-transform">
               {t.hero.ctaSecondary}
             </a>
           </div>
           <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4 text-primary" /> {t.hero.meta.time}</span>
-            <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary" /> {t.hero.meta.noReg}</span>
-            <span className="inline-flex items-center gap-1.5"><Star className="h-4 w-4 text-primary" /> {t.hero.meta.rating}</span>
+            <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4 text-primary animate-circus-float" /> {t.hero.meta.time}</span>
+            <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-primary animate-circus-float" style={{ animationDelay: "0.3s" }} /> {t.hero.meta.noReg}</span>
+            <span className="inline-flex items-center gap-1.5"><Star className="h-4 w-4 text-primary animate-circus-float" style={{ animationDelay: "0.6s" }} /> {t.hero.meta.rating}</span>
           </div>
         </div>
-        <div className="relative">
-          <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-primary/10 blur-2xl" />
-          <img src={heroImg} alt={t.hero.alt} width={1280} height={960} className="w-full rounded-[1.75rem] border border-border bg-card shadow-[var(--shadow-soft)]" />
+        <div className="relative animate-circus-slide-in-right">
+          <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-primary/10 blur-2xl animate-circus-color-shift" />
+          <img src={heroImg} alt={t.hero.alt} width={1280} height={960} className="w-full rounded-[1.75rem] border-4 border-yellow-400 bg-card shadow-[var(--shadow-soft)] animate-circus-float" />
         </div>
       </div>
     </section>
@@ -105,18 +110,18 @@ function PopularTests() {
           const featured = idx === 0;
           const tagLabel = item.tag === "pro" ? t.popular.pro : t.popular.free;
           return (
-            <div key={item.title} className="group relative rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-primary/40">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
+            <div key={item.title} className="group relative rounded-2xl border-2 border-border bg-card p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-2 hover:border-primary/60 hover:shadow-lg animate-circus-slide-in-up" style={{ animationDelay: `${idx * 0.2}s` }}>
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-yellow-400 text-white animate-circus-bounce">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="mt-4 font-display text-lg font-semibold text-ink">{item.title}</h3>
               <p className="mt-1.5 text-sm text-muted-foreground">{item.desc}</p>
               <div className="mt-5 flex items-center justify-between text-xs">
-                <span className="inline-flex items-center gap-1 text-muted-foreground"><Clock className="h-3.5 w-3.5" /> {item.time}</span>
-                <span className={`rounded-full px-2.5 py-0.5 font-semibold ${item.tag === "pro" ? "bg-accent text-accent-foreground" : "bg-primary-soft text-primary"}`}>{tagLabel}</span>
+                <span className="inline-flex items-center gap-1 text-muted-foreground"><Clock className="h-3.5 w-3.5 animate-circus-spin" style={{ animationDuration: "6s" }} /> {item.time}</span>
+                <span className={`rounded-full px-2.5 py-0.5 font-semibold ${item.tag === "pro" ? "bg-gradient-to-r from-accent to-blue-500 text-accent-foreground animate-circus-pulse-glow" : "bg-gradient-to-r from-primary-soft to-yellow-200 text-primary"}`}>{tagLabel}</span>
               </div>
               {featured && (
-                <Link to="/test" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
+                <Link to="/test" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all animate-circus-float">
                   {t.popular.passNow} <ArrowRight className="h-4 w-4" />
                 </Link>
               )}
